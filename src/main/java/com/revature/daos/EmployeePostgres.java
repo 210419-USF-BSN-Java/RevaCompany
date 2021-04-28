@@ -28,7 +28,7 @@ public class EmployeePostgres implements EmployeeDao  {
 		
 		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
 			PreparedStatement ps = con.prepareStatement(sql,keys);
-			PreparedStatement ps = con.prepareStatement(sql);
+			//PreparedStatement ps = con.prepareStatement(sql);
 			
 			ps.setString(1, t.getName());
 			ps.setDouble(2, t.getMonthlySalary());
