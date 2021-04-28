@@ -120,12 +120,18 @@ public class DepartmentPostgres implements DepartmentDao {
 	public Integer delete(Department t) {
 		
 		String sql = "delete from departments where dept_id = ?;";
+		String sql1 = "update employees set dept_name = NULL where dept_id = ?;";
+		
 		int id = t.getId(); 
 		
 		try {
 			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql);
+			PreparedStatement ps1 = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql1);
+			
+			ps1.setInt(1, id);
 			ps.setInt(1, id);
 			
+			ps.executeUpdate();
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
