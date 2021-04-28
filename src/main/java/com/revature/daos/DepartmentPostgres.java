@@ -54,8 +54,7 @@ public class DepartmentPostgres implements DepartmentDao {
 	@Override
 	public Department getById(Integer id) {
 
-		Department d;
-		String sql = "select * from departments where dept_id = ?";
+		String sql = "select * from departments where dept_id = ?;";
 
 		try {
 			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql);
@@ -98,13 +97,41 @@ public class DepartmentPostgres implements DepartmentDao {
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
+		
+		String sql = "update departments set dept_name = ?, monthly_budget = ? where dept_id = ?;";
+		int id = t.getId(); 
+		
+		try {
+			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql);
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			ps.setInt(3, id);
+			
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
+		
+		String sql = "delete from departments where dept_id = ?;";
+		int id = t.getId(); 
+		
+		try {
+			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

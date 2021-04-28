@@ -10,8 +10,15 @@ public class FrontController {
 	
 	public static void main(String[] args) {
 		
+		Department d1 = new Department(2, "newDP", 2000.00);
+		
 		DepartmentPostgres dp = new DepartmentPostgres();
 		System.out.println(dp.getById(2));
+		System.out.println(dp.update(d1));
+		System.out.println(dp.getById(2));
+		System.out.println(dp.delete(d1));
+		
+		
 		System.out.println(dp.getAll());
 		Department d = new Department();
 		d.setName("Sales");
