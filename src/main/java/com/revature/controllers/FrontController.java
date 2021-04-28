@@ -15,6 +15,7 @@ public class FrontController {
 		Department d = new Department();
 		d.setName("Sales");
 		d.setMonthlyBudget(7000.00);
+		d.setId(3);
 		System.out.println(dp.add(d));
 		System.out.println(dp.getAll());
 	}
