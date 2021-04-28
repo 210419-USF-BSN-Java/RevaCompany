@@ -19,6 +19,10 @@ public class Employee implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Employee(int id) {
+		this.id = id;
+	}
 	public Employee(Integer id, String name, String position, Float monthlySalary, Department department,
 			Employee manager) {
 		super();
