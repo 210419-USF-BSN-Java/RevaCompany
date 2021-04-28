@@ -1,6 +1,7 @@
 package com.revature.daos;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,8 +16,37 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Department add(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		/*
+		 * Department is being passed in
+		 * Take in the fields
+		 * add a record to the department table
+		 * Insert into tableName (col1, col2) values(x,y);
+		 * insert into departments (dept_name, monthly budget) values (t.getName(), t.getBudget());
+		 * get connection
+		 * create prepared statement from connection
+		 * setting the variables
+		 * execute
+		 * 
+		 * 
+		 */
+		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
+		
+		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				t.setId(rs.getInt(1));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	@Override
