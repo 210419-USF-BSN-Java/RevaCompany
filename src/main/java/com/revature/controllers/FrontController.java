@@ -11,6 +11,7 @@ public class FrontController {
 	public static void main(String[] args) {
 		
 		DepartmentPostgres dp = new DepartmentPostgres();
+		System.out.println(dp.getById(2));
 		System.out.println(dp.getAll());
 		Department d = new Department();
 		d.setName("Sales");
