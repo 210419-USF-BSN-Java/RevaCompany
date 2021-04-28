@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revature.models.Client;
 import com.revature.models.Department;
+import com.revature.utils.DBConnection;
 
 import util.ConnectionUtil;
 
@@ -58,7 +60,21 @@ public class DepartmentPostgres implements DepartmentDao{
 	@Override
 	public Department getById(Integer id) {
 		// TODO Auto-generated method stub
-		return null;
+		String str = "SELECT dept_id, dept_name, monthly_budget FROM departments WHERE dept_id = ?";
+		Department d = new Department();
+		try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement s0 = connection.prepareStatement(str);
+			s0.setInt(1, id);
+	        ResultSet r0 = s0.executeQuery();  // SAUCE
+	        while(r0.next()) {
+	        	d.setId(r0.getInt("dept_id"));
+	        	d.setName(r0.getString("dept_name"));
+	        	d.setMonthlyBudget(r0.getDouble("monthly_budget"));
+	        }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        return d;
 	}
 
 	@Override
@@ -87,13 +103,37 @@ public class DepartmentPostgres implements DepartmentDao{
 	@Override
 	public Integer update(Department t) {
 		// TODO Auto-generated method stub
-		return null;
+		String str = "UPDATE department" + " SET dept_id = ?" + "" + " SET dept_name = ?" + " SET monthly_budget = ?";
+		
+		Integer affectedrows = 0;
+		
+		try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = connection.prepareStatement(str);
+			ps.setInt(1, t.getId());
+			ps.setString(2, t.getName());
+			ps.setDouble(3, t.getMonthlyBudget());
+
+			affectedrows = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return affectedrows;
 	}
 
 	@Override
 	public Integer delete(Department t) {
 		// TODO Auto-generated method stub
-		return null;
+		String str = "DELETE FROM departments WHERE dept_id = ?";
+		int affectedrows = 0;
+        try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
+        	PreparedStatement ps = connection.prepareStatement(str);
+        	ps.setInt(1, t.getId());
+
+            affectedrows = ps.executeUpdate();
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return affectedrows;
 	}
 
 	@Override
