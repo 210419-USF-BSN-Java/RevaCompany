@@ -12,10 +12,21 @@ public class FrontController {
 		
 		DepartmentPostgres dp = new DepartmentPostgres();
 		System.out.println(dp.getAll());
-		Department d = new Department();
-		d.setName("Sales");
-		d.setMonthlyBudget(7000.00);
-		System.out.println(dp.add(d));
-		System.out.println(dp.getAll());
+		
+//		Department d = new Department();
+//		d.setName("Sales");
+//		d.setMonthlyBudget(7000.00);
+//		System.out.println(dp.add(d));
+//		System.out.println(dp.getAll());
+		
+		Department d;
+		d = dp.getById(1);
+		System.out.println(d);
+		
+		d.setMonthlyBudget(5000.00);
+		dp.update(d);
+		
+		d = dp.getById(1);
+		System.out.println(d);
 	}
 }

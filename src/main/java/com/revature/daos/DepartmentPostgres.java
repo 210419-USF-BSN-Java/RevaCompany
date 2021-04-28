@@ -57,8 +57,29 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Department getById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		Department dep = null;
+		String sql = "select * from departments where dept_id = ?";
+		
+		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				int deptId = rs.getInt("dept_id");
+				String deptName = rs.getString("dept_name");
+				double budget = rs.getDouble("monthly_budget");
+				dep = new Department(deptId, deptName, budget);
+			}
+			
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dep;
 	}
 
 	@Override
@@ -77,23 +98,52 @@ public class DepartmentPostgres implements DepartmentDao{
 				double budget = rs.getDouble("monthly_budget");
 				departments.add(new Department(deptId, deptName, budget));
 			}
+			
+			c.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return departments;
 	}
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer result = 0;
+		String sql = "update departments set dept_name = ?, monthly_budget = ? where dept_id = ?";
+		
+		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			ps.setInt(3, t.getId());
+			
+			result = ps.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer result = 0;
+		String sql = "delete * from departments where dept_id = ?";
+		
+		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, t.getId());
+			
+			result = ps.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 	@Override
