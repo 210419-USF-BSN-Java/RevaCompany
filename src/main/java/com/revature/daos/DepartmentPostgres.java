@@ -8,10 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revature.models.Client;
 import com.revature.models.Department;
-import com.revature.utils.DBConnection;
-
 import util.ConnectionUtil;
 
 public class DepartmentPostgres implements DepartmentDao{

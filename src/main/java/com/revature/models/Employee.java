@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class Employee implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String name;
@@ -19,8 +16,7 @@ public class Employee implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Employee(Integer id, String name, String position, Float monthlySalary, Department department,
-			Employee manager) {
+	public Employee(Integer id, String name, String position, Float monthlySalary, Department department, Employee manager) {
 		super();
 		this.id = id;
 		this.name = name;
