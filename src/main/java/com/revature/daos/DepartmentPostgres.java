@@ -57,7 +57,25 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Department getById(Integer id) {
-		// TODO Auto-generated method stub
+		String sql = "select * from departments WHERE id = ?;";
+		
+		try {
+			Connection c = ConnectionUtil.getConnectionFromEnv();
+			PreparedStatement pstmt = c.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			
+			ResultSet rs = pstmt.executeQuery(sql);
+			
+			if(rs.next()) {
+				int deptId = rs.getInt("dept_id");
+				String deptName = rs.getString("dept_name");
+				double budget = rs.getDouble("monthly_budget");
+				return new Department(deptId, deptName, budget);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -86,14 +104,43 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "UPDATE departments SET dept_name = ?, monthly_budget = ? "
+				+ " WHERE dept_id = ?";
+		
+		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			ps.setInt(3, t.getId());
+			
+			int count = ps.executeUpdate();
+			return count;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "delete from departments WHERE dept_id = ?;";
+		
+		try {
+			Connection c = ConnectionUtil.getConnectionFromEnv();
+			PreparedStatement pstmt = c.prepareStatement(sql);
+			pstmt.setInt(1, t.getId());
+			
+			int count = pstmt.executeUpdate();
+			return count;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	@Override
