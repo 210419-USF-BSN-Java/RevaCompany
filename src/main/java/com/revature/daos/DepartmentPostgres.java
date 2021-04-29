@@ -35,6 +35,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		// String[] keys = {"dept_id"};
 		
 		try(Connection con = ConnectionUtil.getConnectionFromFile()){
+			con.setAutoCommit(false);
 //			PreparedStatement ps = con.prepareStatement(sql,keys);
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1,t.getName());
@@ -47,6 +48,9 @@ public class DepartmentPostgres implements DepartmentDao{
 			if(rs.next()) {
 				department = t;
 				department.setId(rs.getInt(1));
+				con.commit();
+			}else {
+				con.rollback();
 			}
 			
 		} catch (SQLException | IOException e) {
