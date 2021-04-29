@@ -4,67 +4,131 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.models.Department;
 import com.revature.models.Employee;
 
-
 import util.ConnectionUtil;
 
-public class EmployeePostgres implements EmployeeDao  {
+public class EmployeePostgres implements EmployeeDao {
 
 	@Override
 	public Employee add(Employee t) {
-		// TODO Auto-generated method stub
-		/* */
 		Employee employee = null;
-		String sql = "INSERT INTO public.employees(\n"
-				+ "	 empl_name, monthly_salary, empl_position,"
-				+ " manager_id, dept_id)\n"
-				+ "	VALUES (?, ?, ?, ?, ?);";
-//		String sql = "insert into departments (dept_name, monthly_budget) values (?,?);";
-		String[] keys = {"empl_id"};
-		
-		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
-			PreparedStatement ps = con.prepareStatement(sql,keys);
-			//PreparedStatement ps = con.prepareStatement(sql);
-			
+		String sql = "INSERT INTO public.employees(" + "empl_name, monthly_salary, empl_position,"
+				+ " manager_id, dept_id)" + "	VALUES (?, ?, ?, ?, ?);";
+		String[] keys = { "empl_id" };
+
+		Employee manager = t.getManager();
+		int managerId = manager.getId();
+
+		Department dept = t.getDepartment();
+		int deptId = dept.getId();
+
+		try (Connection con = ConnectionUtil.getConnectionFromEnv()) {
+			PreparedStatement ps = con.prepareStatement(sql, keys);
+//			PreparedStatement ps = con.prepareStatement(sql);
+
 			ps.setString(1, t.getName());
 			ps.setDouble(2, t.getMonthlySalary());
-			ps.setString(3,  t.getPosition());
-			ps.setString(4, t.getPosition());
-			ps.setInt(5, t.getId());
-		
-			
-			
-			//ResultSet rs = ps.executeQuery();
+			ps.setString(3, t.getPosition());
+			ps.setInt(4, managerId);
+			ps.setInt(5, deptId);
+
 			ps.executeUpdate();
-		ResultSet rs = ps.getGeneratedKeys();
-			
-			if(rs.next()) {
+			ResultSet rs = ps.getGeneratedKeys();
+
+			if (rs.next()) {
 				employee = t;
 				employee.setId(rs.getInt(1));
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return employee;
-	
+
 	}
 
 	@Override
 	public Employee getById(Integer id) {
-		// TODO Auto-generated method stub
+		DepartmentDao deptDao = new DepartmentPostgres();
+
+		String sql = "select * from employee where empl_id = ?";
+		try {
+			Connection c = ConnectionUtil.getConnectionFromEnv();
+			PreparedStatement pstmt = c.prepareStatement(sql);
+			pstmt.setInt(1, id);
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			if (rs.next()) {
+				String name = rs.getString("empl_name");
+				String position = rs.getString("empl_position");
+				Float monthlySalary = rs.getFloat("monthly_salary");
+				int managerId = rs.getInt("manager_id");
+				int deptId = rs.getInt("dept_id");
+
+				Employee manager = getById(managerId);
+				Department dept = deptDao.getById(deptId);
+
+				Employee employee = new Employee();
+				employee.setId(id);
+				employee.setName(name);
+				employee.setPosition(position);
+				employee.setMonthlySalary(monthlySalary);
+				employee.setManager(manager);
+				employee.setDepartment(dept);
+				return employee;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public List<Employee> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<Employee> employeeList = new ArrayList<>();
+		DepartmentDao deptDao = new DepartmentPostgres();
+
+		String sql = "select * from employee";
+		try {
+			Connection c = ConnectionUtil.getConnectionFromEnv();
+			Statement s = c.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			while (rs.next()) {
+				int id = rs.getInt("empl_id");
+				String name = rs.getString("empl_name");
+				String position = rs.getString("empl_position");
+				Float monthlySalary = rs.getFloat("monthly_salary");
+				int managerId = rs.getInt("manager_id");
+				int deptId = rs.getInt("dept_id");
+
+				Employee manager = getById(managerId);
+				Department dept = deptDao.getById(deptId);
+
+				Employee employee = new Employee();
+				employee.setId(id);
+				employee.setName(name);
+				employee.setPosition(position);
+				employee.setMonthlySalary(monthlySalary);
+				employee.setManager(manager);
+				employee.setDepartment(dept);
+
+				employeeList.add(employee);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+
+		return employeeList;
 	}
 
 	@Override
@@ -81,7 +145,38 @@ public class EmployeePostgres implements EmployeeDao  {
 
 	@Override
 	public Employee getByName(String name) {
-		// TODO Auto-generated method stub
+		DepartmentDao deptDao = new DepartmentPostgres();
+
+		String sql = "select * from employee where empl_name = ?";
+		try {
+			Connection c = ConnectionUtil.getConnectionFromEnv();
+			PreparedStatement pstmt = c.prepareStatement(sql);
+			pstmt.setString(1, name);
+
+			ResultSet rs = pstmt.executeQuery(sql);
+			if (rs.next()) {
+				int id = rs.getInt("empl_id");
+				String position = rs.getString("empl_position");
+				Float monthlySalary = rs.getFloat("monthly_salary");
+				int managerId = rs.getInt("manager_id");
+				int deptId = rs.getInt("dept_id");
+
+				Employee manager = getById(managerId);
+				Department dept = deptDao.getById(deptId);
+
+				Employee employee = new Employee();
+				employee.setId(id);
+				employee.setName(name);
+				employee.setPosition(position);
+				employee.setMonthlySalary(monthlySalary);
+				employee.setManager(manager);
+				employee.setDepartment(dept);
+				return employee;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
