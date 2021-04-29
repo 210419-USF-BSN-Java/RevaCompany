@@ -14,6 +14,7 @@ import util.ConnectionUtil;
 
 public class DepartmentPostgres implements DepartmentDao{
 
+	
 	@Override
 	public Department add(Department t) {
 		/*
@@ -58,7 +59,29 @@ public class DepartmentPostgres implements DepartmentDao{
 	@Override
 	public Department getById(Integer id) {
 		// TODO Auto-generated method stub
-		return null;
+		Department d = new Department();
+		
+		String sql = "SELECT * FROM departments WHERE dept_id = ?;";
+		try (Connection c = ConnectionUtil.getConnectionFromEnv()){
+			
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, id);
+//			Statement s = c.createStatement();
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				d.setId(id);
+				d.setName(rs.getString("dept_name"));
+				d.setMonthlyBudget(rs.getDouble("monthly_budget"));
+			}
+	
+		}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		return d;
 	}
 
 	@Override
@@ -68,6 +91,7 @@ public class DepartmentPostgres implements DepartmentDao{
 
 		try {
 			Connection c = ConnectionUtil.getConnectionFromEnv();
+			PreparedStatement ps = c.prepareStatement(sql);
 			Statement s = c.createStatement();
 			ResultSet rs = s.executeQuery(sql);
 			
@@ -86,14 +110,41 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "UPDATE departments SET dept_name = ?, monthly_budget = ? WHERE dept_id = ?";
+		int results = 0;
+		try (Connection c = ConnectionUtil.getConnectionFromEnv()){
+			
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, t.getId());
+			ps.setString(2, t.getName());
+			ps.setDouble(3, t.getMonthlyBudget());
+			
+			results = ps.executeUpdate();
+			
+		}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return results;
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "DELETE FROM departments WHERE dept_name = ?;";
+		int result = 0;
+		try (Connection c = ConnectionUtil.getConnectionFromEnv()){
+			
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, t.getId());
+			
+			result = ps.executeUpdate();
+		}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return result;
 	}
 
 	@Override

@@ -7,4 +7,5 @@ import com.revature.models.Department;
 public interface DepartmentDao extends GenericDao<Department> {
 
 	public List<Department> getDepartmentsByMonthlyBudget(Double budget);
+	
 }
