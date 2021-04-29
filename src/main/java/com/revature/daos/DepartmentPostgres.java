@@ -26,15 +26,12 @@ public class DepartmentPostgres implements DepartmentDao{
 		 * create prepared statement from connection
 		 * setting the variables
 		 * execute
-
 		 */
 		Department department = null;
 		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
-//		String sql = "insert into departments (dept_name, monthly_budget) values (?,?);";
-		String[] keys = {"dept_id"};
+//		String[] keys = {"dept_id"};
 		
 		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
-//			PreparedStatement ps = con.prepareStatement(sql,keys);
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1,t.getName());
 			ps.setDouble(2, t.getMonthlyBudget());
@@ -56,9 +53,10 @@ public class DepartmentPostgres implements DepartmentDao{
 	}
 
 	@Override
-	public Department getById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Department getById(Integer id) 
+	{
+		//given an ID, return a department object
+		return Department;
 	}
 
 	@Override
@@ -77,23 +75,74 @@ public class DepartmentPostgres implements DepartmentDao{
 				double budget = rs.getDouble("monthly_budget");
 				departments.add(new Department(deptId, deptName, budget));
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}	catch (SQLException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return departments;
 	}
 
 	@Override
-	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+	//update method by Rick Ricci
+	public Integer update(Department t) 
+	{	//initialize execution status variable
+		int executionStatus = 0;
+		//SQL script to add new department to the Departments table
+		String newDeptRecord = "UPDATE departments SET(dept_name, monthly_budget) = (?, ?) WHERE dept_id = ?;";
+		try(Connection con = ConnectionUtil.getConnectionFromEnv())
+		{	//leverage DB connection utility singleton
+			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(newDeptRecord);
+			//set fields in new department record
+			ps.setString(1,t.getName());
+			ps.setDouble(2,t.getMonthlyBudget());
+			ps.setInt(3,t.getId());
+			//get execution status
+			executionStatus = ps.executeUpdate();
+		}
+		catch(SQLException e) 
+		{	//check for more SQL exceptions
+		    while(e != null) 
+		    {   //return actionable/useful exception info
+		    	System.out.println("Error: " + e.getErrorCode());
+		    	System.out.println("Message:  " + e.getMessage());      
+		    	System.out.println("State: " + e.getSQLState()); 
+		    	//retrieve next SQL exception
+		    	e = e.getNextException();
+		    }
+		}
+		//return execution status; i.e., number of rows/records affected
+		return executionStatus;
 	}
 
 	@Override
-	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+	//delete method edited by Rick Ricci
+	public Integer delete(Department t)
+	{	//initialize execution status variable
+		int executionStatus = 0;
+		//SQL script to delete a department from the Departments table
+		String delDeptRecord = "DELETE FROM departments WHERE dept_id = ?";
+		try
+		{	//leverage DB connection utility singleton
+			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(delDeptRecord);
+			//set fields in new department record
+			ps.setInt(1,t.getId());
+			//get execution status
+			executionStatus = ps.executeUpdate();
+		}
+		catch(SQLException e) 
+		{	//check for more SQL exceptions
+		    while(e != null) 
+		    {   //return actionable/useful exception info
+		    	System.out.println("Error: " + e.getErrorCode());
+		    	System.out.println("Message:  " + e.getMessage());      
+		    	System.out.println("State: " + e.getSQLState()); 
+		    	//retrieve next SQL exception
+		    	e = e.getNextException();
+		    }
+		}
+		//return execution status; i.e., number of rows/records affected
+		return executionStatus;
 	}
 
 	@Override
