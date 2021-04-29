@@ -1,6 +1,7 @@
 package com.revature.controllers;
 
 import com.revature.daos.DepartmentPostgres;
+import com.revature.daos.EmployeePostgres;
 import com.revature.models.Department;
 import com.revature.services.DepartmentService;
 
@@ -17,5 +18,6 @@ public class FrontController {
 		d.setMonthlyBudget(7000.00);
 		System.out.println(dp.add(d));
 		System.out.println(dp.getAll());
+		
 	}
 }

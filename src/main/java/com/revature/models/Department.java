@@ -22,6 +22,9 @@ public class Department implements Serializable {
 		this.name = name;
 		this.monthlyBudget = monthlyBudget;
 	}
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
