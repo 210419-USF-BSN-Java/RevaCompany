@@ -1,5 +1,6 @@
 package com.revature.daos;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,9 +32,9 @@ public class DepartmentPostgres implements DepartmentDao{
 		Department department = null;
 		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
 //		String sql = "insert into departments (dept_name, monthly_budget) values (?,?);";
-		String[] keys = {"dept_id"};
+		// String[] keys = {"dept_id"};
 		
-		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
+		try(Connection con = ConnectionUtil.getConnectionFromFile()){
 //			PreparedStatement ps = con.prepareStatement(sql,keys);
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1,t.getName());
@@ -48,7 +49,7 @@ public class DepartmentPostgres implements DepartmentDao{
 				department.setId(rs.getInt(1));
 			}
 			
-		} catch (SQLException e) {
+		} catch (SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -57,8 +58,23 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Department getById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		Department department = new Department();
+		String sql = "select * from departments where dept_id = ?";
+		try (Connection con = ConnectionUtil.getConnectionFromFile()) {
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				department.setId(id);
+				department.setName(rs.getString("dept_name"));
+				department.setMonthlyBudget(rs.getDouble("monthly_budget"));
+			}
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+		return department;
 	}
 
 	@Override
@@ -86,14 +102,38 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "update departments set dept_name = ?, monthly_budget = ? where dept_id = ?";
+		int a = -1;
+		
+		try(Connection con = ConnectionUtil.getConnectionFromFile()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			ps.setInt(3, t.getId());
+			
+			a = ps.executeUpdate();
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "delete from departments where dept_id = ?";
+		int a = -1;
+		
+		try(Connection con = ConnectionUtil.getConnectionFromFile()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, t.getId());
+			
+			a = ps.executeUpdate();
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
 	}
 
 	@Override
@@ -116,5 +156,4 @@ public class DepartmentPostgres implements DepartmentDao{
 		
 		return departments;
 	}
-
 }
