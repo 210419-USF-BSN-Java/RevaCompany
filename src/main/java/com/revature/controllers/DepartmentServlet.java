@@ -10,13 +10,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.daos.EmployeeDao;
+import com.revature.daos.EmployeePostgres;
+
 import util.h2Util;
 
 public class DepartmentServlet extends HttpServlet{
     
+    private h2Util h2= new h2Util();
+
     public void init(ServletConfig config) {
 		try {
-            h2Util.setup();
+            h2.setup();
         } catch (FileNotFoundException | SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -26,7 +31,7 @@ public class DepartmentServlet extends HttpServlet{
 	
 	public void destroy() {
 		try {
-            h2Util.teardown();
+            h2.teardown();
         } catch (FileNotFoundException | SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -34,7 +39,7 @@ public class DepartmentServlet extends HttpServlet{
 	}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
-        // TODO: Return all departments
+        // TODO: Retrieve all departments
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{

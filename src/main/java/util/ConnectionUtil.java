@@ -58,7 +58,13 @@ public class ConnectionUtil {
 
 	public static Connection getConnectionH2() throws SQLException{
 			if(connection==null || connection.isClosed()){
-				connection = DriverManager.getConnection("jdbc:h2:~");
+				try {
+					Class.forName("org.h2.Driver");
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				connection = DriverManager.getConnection("jdbc:h2:mem:db1", "sa", "");
 			}
 		return connection;
 	}

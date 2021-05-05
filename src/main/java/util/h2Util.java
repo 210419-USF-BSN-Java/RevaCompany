@@ -1,7 +1,8 @@
 package util;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -9,15 +10,16 @@ import org.h2.tools.RunScript;
 
 public class h2Util {
 
-    public static void setup() throws SQLException, FileNotFoundException {
+    public void setup() throws SQLException, FileNotFoundException {
         Connection c = ConnectionUtil.getConnectionH2();
-        RunScript.execute(c, new FileReader("setup.sql"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("scripts/setup.sql")));
+        RunScript.execute(c, reader);
 
     }
 
-    public static void teardown() throws SQLException, FileNotFoundException {
+    public void teardown() throws SQLException, FileNotFoundException {
         Connection c = ConnectionUtil.getConnectionH2();
-        RunScript.execute(c, new FileReader("teardown.sql"));
-
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("scripts/teardown.sql")));
+        RunScript.execute(c, reader);
     }
 }
