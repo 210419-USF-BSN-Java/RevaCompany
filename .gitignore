@@ -87,3 +87,8 @@ buildNumber.properties
 #Mac
 .DS_Store
 /.recommenders/
+
+~.mv.db
+~.trace.db
+
+.vscode

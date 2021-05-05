@@ -55,4 +55,11 @@ public class ConnectionUtil {
 		
 		return connection;
 	}
+
+	public static Connection getConnectionH2() throws SQLException{
+			if(connection==null || connection.isClosed()){
+				connection = DriverManager.getConnection("jdbc:h2:~");
+			}
+		return connection;
+	}
 }
