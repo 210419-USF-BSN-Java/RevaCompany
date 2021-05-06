@@ -64,7 +64,7 @@ public class ConnectionUtil {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				connection = DriverManager.getConnection("jdbc:h2:mem:db1", "sa", "");
+				connection = DriverManager.getConnection("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1", "sa", "");
 			}
 		return connection;
 	}

@@ -29,7 +29,7 @@ public class DepartmentPostgres implements DepartmentDao{
 
 		 */
 		Department department = null;
-		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
+		String sql = "insert into departments (dept_name, monthly_budget) values (?,?)";
 		
 		try(Connection con = ConnectionUtil.getConnectionH2()){
 			con.setAutoCommit(false);
@@ -38,13 +38,9 @@ public class DepartmentPostgres implements DepartmentDao{
 			ps.setString(1,t.getName());
 			ps.setDouble(2, t.getMonthlyBudget());
 			
-			ResultSet rs = ps.executeQuery();
-			
-			if(rs.next()) {
-				department = t;
-				department.setId(rs.getInt(1));
+			if (ps.executeUpdate() != 0) {
 				con.commit();
-			}else {
+			} else {
 				con.rollback();
 			}
 			
