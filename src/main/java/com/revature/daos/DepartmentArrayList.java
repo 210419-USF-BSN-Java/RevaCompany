@@ -58,13 +58,6 @@ public class DepartmentArrayList implements DepartmentDao{
 
 	@Override
 	public List<Department> getDepartmentsByMonthlyBudget(Double budget) {
-//		ArrayList<Department> deps = new ArrayList<>();
-//		for(Department d: departments) {
-//			if(d.getMonthlyBudget() == budget) {
-//				deps.add(d);
-//			}
-//		}
-//		return deps;
 		
 		return departments.stream().filter(d->budget.equals(d.getMonthlyBudget())).collect(Collectors.toList());
 	}

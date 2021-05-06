@@ -15,7 +15,7 @@ public class ConnectionUtil {
 
 		String url = "jdbc:postgresql://localhost:5432/postgres";
 		String username = "postgres";
-		String password = "p4ssw0rd";
+		String password = "password";
 
 		if(connection == null || connection.isClosed()) {
 		connection = DriverManager.getConnection(url, username, password);
@@ -53,6 +53,19 @@ public class ConnectionUtil {
 		connection = DriverManager.getConnection(url, username, password);
 		}
 		
+		return connection;
+	}
+
+	public static Connection getConnectionH2() throws SQLException{
+			if(connection==null || connection.isClosed()){
+				try {
+					Class.forName("org.h2.Driver");
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				connection = DriverManager.getConnection("jdbc:h2:mem:db1", "sa", "");
+			}
 		return connection;
 	}
 }

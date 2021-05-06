@@ -29,22 +29,22 @@ public class DepartmentPostgres implements DepartmentDao{
 		 */
 		Department department = null;
 		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
-//		String sql = "insert into departments (dept_name, monthly_budget) values (?,?);";
-		String[] keys = {"dept_id"};
 		
-		try(Connection con = ConnectionUtil.getConnectionFromEnv()){
-//			PreparedStatement ps = con.prepareStatement(sql,keys);
+		try(Connection con = ConnectionUtil.getConnectionH2()){
+			con.setAutoCommit(false);
+
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1,t.getName());
 			ps.setDouble(2, t.getMonthlyBudget());
 			
 			ResultSet rs = ps.executeQuery();
-//			ps.executeUpdate();
-//			ResultSet rs = ps.getGeneratedKeys();
 			
 			if(rs.next()) {
 				department = t;
 				department.setId(rs.getInt(1));
+				con.commit();
+			}else {
+				con.rollback();
 			}
 			
 		} catch (SQLException e) {
@@ -56,22 +56,24 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Department getById(Integer id) {
-		// TODO Auto-generated method stub
-		String str = "SELECT dept_id, dept_name, monthly_budget FROM departments WHERE dept_id = ?";
-		Department d = new Department();
-		try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
-			PreparedStatement s0 = connection.prepareStatement(str);
-			s0.setInt(1, id);
-	        ResultSet r0 = s0.executeQuery();  // SAUCE
-	        while(r0.next()) {
-	        	d.setId(r0.getInt("dept_id"));
-	        	d.setName(r0.getString("dept_name"));
-	        	d.setMonthlyBudget(r0.getDouble("monthly_budget"));
-	        }
+		Department department = null;
+		String sql = "select * from departments where dept_id = ?";
+		try (Connection con = ConnectionUtil.getConnectionH2()) {
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next()) {
+				department = new Department();
+				department.setId(id);
+				department.setName(rs.getString("dept_name"));
+				department.setMonthlyBudget(rs.getDouble("monthly_budget"));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-        return d;
+		return department;
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		String sql = "select * from departments;";
 
 		try {
-			Connection c = ConnectionUtil.getConnectionFromEnv();
+			Connection c = ConnectionUtil.getConnectionH2();
 			Statement s = c.createStatement();
 			ResultSet rs = s.executeQuery(sql);
 			
@@ -99,38 +101,38 @@ public class DepartmentPostgres implements DepartmentDao{
 
 	@Override
 	public Integer update(Department t) {
-		// TODO Auto-generated method stub
-		String str = "UPDATE department" + " SET dept_id = ?" + "" + " SET dept_name = ?" + " SET monthly_budget = ?";
+		String sql = "update departments set dept_name = ?, monthly_budget = ? where dept_id = ?";
+		int a = -1;
 		
-		Integer affectedrows = 0;
-		
-		try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
-			PreparedStatement ps = connection.prepareStatement(str);
-			ps.setInt(1, t.getId());
-			ps.setString(2, t.getName());
-			ps.setDouble(3, t.getMonthlyBudget());
-
-			affectedrows = ps.executeUpdate();
+		try(Connection con = ConnectionUtil.getConnectionH2()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, t.getName());
+			ps.setDouble(2, t.getMonthlyBudget());
+			ps.setInt(3, t.getId());
+			
+			a = ps.executeUpdate();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return affectedrows;
+		return a;
 	}
 
 	@Override
 	public Integer delete(Department t) {
-		// TODO Auto-generated method stub
-		String str = "DELETE FROM departments WHERE dept_id = ?";
-		int affectedrows = 0;
-        try(Connection connection = ConnectionUtil.getConnectionFromEnv()){
-        	PreparedStatement ps = connection.prepareStatement(str);
-        	ps.setInt(1, t.getId());
-
-            affectedrows = ps.executeUpdate();
-        } catch (SQLException e) {
+		String sql = "delete from departments where dept_id = ?";
+		int a = -1;
+		
+		try(Connection con = ConnectionUtil.getConnectionH2()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, t.getId());
+			
+			a = ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return affectedrows;
+		return a;
 	}
 
 	@Override
@@ -139,7 +141,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		List<Department> departments = new ArrayList<>();
 		
 		try {
-			PreparedStatement ps = ConnectionUtil.getConnectionFromEnv().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setDouble(1, budget);
 			ResultSet rs = ps.executeQuery();
 			
@@ -153,5 +155,4 @@ public class DepartmentPostgres implements DepartmentDao{
 		
 		return departments;
 	}
-
 }
