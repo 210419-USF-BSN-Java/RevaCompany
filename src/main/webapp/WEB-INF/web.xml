@@ -10,4 +10,15 @@
     <servlet-name>DepartmentServlet</servlet-name>
     <url-pattern>/departments</url-pattern>
   </servlet-mapping>
+
+	<servlet>
+		<servlet-name>NewDepartmentServlet</servlet-name>
+		<servlet-class>com.revature.controllers.NewDepartmentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	<servlet-name>NewDepartmentServlet</servlet-name>
+	<url-pattern>/new</url-pattern>
+	</servlet-mapping>
+
+
 </web-app>
