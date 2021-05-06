@@ -10,5 +10,7 @@ public interface DepartmentService {
 	public Department getDepartmentById(Integer id);
 	public List<Department> getDepartments();
 	public List<Department> getDepartmentsByMonthlyBudget(Double budget);
+	public boolean updateDepartment(Department d);
+	public boolean deleteDepartement(Department d);
 	
 }
