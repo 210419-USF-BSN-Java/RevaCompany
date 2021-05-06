@@ -33,7 +33,7 @@ public class DepartmentPostgres implements DepartmentDao{
 
 		String[] keys = {"dept_id"};
 		
-		try(Connection con = ConnectionUtil.getHardCodedConnection()){
+		try(Connection con = ConnectionUtil.getConnectionH2()){
 //			PreparedStatement ps = con.prepareStatement(sql,keys);
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1,t.getName());
@@ -60,7 +60,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		Department departmentid = new Department();
 		String sql = "SELECT * FROM test.departments WHERE dept_id = ?";
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -84,7 +84,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		String sql = "select * from test.departments";
 
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -106,7 +106,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		String sql = "UPDATE test.departments SET (dept_name, monthly_budget) = (?,?) WHERE dept_id = ? ";
 		
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setString(1,t.getName());
 			ps.setDouble(2, t.getMonthlyBudget());
 			ps.setInt(3, t.getId());
@@ -125,7 +125,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		Integer result = null;
 		String sql = "DELETE FROM test.departments where dept_id = ?";
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setInt(1, t.getId());
 			result = ps.executeUpdate();
 		}catch (SQLException e) {
@@ -141,7 +141,7 @@ public class DepartmentPostgres implements DepartmentDao{
 		List<Department> departments = new ArrayList<>();
 		
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setDouble(1, budget);
 			ResultSet rs = ps.executeQuery();
 			

@@ -19,7 +19,7 @@ public class EmployeePostgres implements EmployeeDao {
 		String sql = "INSERT INTO test.employees (empl_name, monthly_salary, empl_position, manager_id, dept_id) VALUES (?,?,?,?,?) RETURNING empl_id;";
 		Employee emp = null;
 
-		try (Connection con = ConnectionUtil.getConnectionFromEnv()) {
+		try (Connection con = ConnectionUtil.getConnectionH2()) {
 
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, t.getName());
@@ -45,7 +45,7 @@ public class EmployeePostgres implements EmployeeDao {
 		Employee emp = new Employee();
 		String sql = "SELECT * FROM test.employees e INNER JOIN test.departments d ON e.dept_id = d.dept_id WHERE e.empl_id = ?";
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -79,7 +79,7 @@ public class EmployeePostgres implements EmployeeDao {
 		String sql = "SELECT * from test.employees e INNER JOIN test.departments d ON e.dept_id = d.dept_id";
 
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				int deptId = rs.getInt("dept_id");
@@ -108,7 +108,7 @@ public class EmployeePostgres implements EmployeeDao {
 		String sql = "UPDATE test.employees SET (empl_name, empl_position, monthly_salary, dept_id, manager_id) = (?,?,?,?,?) WHERE empl_id = ?";
 
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setString(1, t.getName());
 			ps.setString(2, t.getPosition());
 			ps.setFloat(3, t.getMonthlySalary());
@@ -130,7 +130,7 @@ public class EmployeePostgres implements EmployeeDao {
 		String sql = "DELETE FROM test.employees where empl_id = ?";
 
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 
 			ps.setInt(1, t.getId());
 			result = ps.executeUpdate();
@@ -148,7 +148,7 @@ public class EmployeePostgres implements EmployeeDao {
 		Employee emp = new Employee();
 		String sql = "SELECT * FROM test.employees e INNER JOIN test.departments d ON e.dept_id = d.dept_id WHERE e.empl_name = ?";
 		try {
-			PreparedStatement ps = ConnectionUtil.getHardCodedConnection().prepareStatement(sql);
+			PreparedStatement ps = ConnectionUtil.getConnectionH2().prepareStatement(sql);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
