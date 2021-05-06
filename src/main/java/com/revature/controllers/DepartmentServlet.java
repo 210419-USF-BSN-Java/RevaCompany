@@ -2,8 +2,10 @@ package com.revature.controllers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.models.Department;
 import com.revature.services.DepartmentService;
 import com.revature.services.DepartmentServiceImplementation;
@@ -52,6 +55,11 @@ public class DepartmentServlet extends HttpServlet {
         for (Department d : depts) {
             System.out.println(d.toString());
         }
+
+        ObjectMapper om = new ObjectMapper();
+        PrintWriter pw = response.getWriter();
+        pw.write(om.writeValueAsString(depts));
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
