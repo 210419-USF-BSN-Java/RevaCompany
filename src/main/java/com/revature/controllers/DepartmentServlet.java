@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.daos.DepartmentArrayList;
 import com.revature.daos.EmployeeDao;
 import com.revature.daos.EmployeePostgres;
 import com.revature.models.Department;
@@ -24,7 +25,7 @@ import util.h2Util;
 public class DepartmentServlet extends HttpServlet{
     
     private h2Util h2= new h2Util();
-    private DepartmentService ds = new DepartmentServiceImplementation();
+    private DepartmentArrayList ds = new DepartmentArrayList();
 
     public void init(ServletConfig config) {
 		try {
@@ -52,11 +53,12 @@ public class DepartmentServlet extends HttpServlet{
 		List<Department> department;
 		
 		System.out.println("get request to /departments");
-		department = ds.getDepartments();
+		department = ds.getAll();
 		
 		ObjectMapper om = new ObjectMapper();
 		PrintWriter pw = response.getWriter();
 		pw.write(om.writeValueAsString(department));
+		
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
@@ -69,7 +71,7 @@ public class DepartmentServlet extends HttpServlet{
     	d.setName(name);
     	d.setMonthlyBudget(budget);
     	
-    	if(id == null||name == null||budget == null|| ds.addDepartment(d) == 0) {
+    	if(id == null||name == null||budget == null || ds.add(d)== null) {
     		response.setStatus(400);
     	} else {
     		response.setStatus(201);

@@ -11,19 +11,14 @@
     <body>
         <!-- What is going to be displayed on the webpage -->
         <div class="container">
-            <h3>Add a new Department:</h3>
+            <h3>Welcome to RevaCompany!</h3>
             <br>
-            <form action="/RevaCompany/departments" method="POST">
-                <label>id:</label>
-                <input type="text" name="id" class="form-control">
-                <br>
-                <label>name:</label>
-                <input type="text" name="name" class="form-control">
-                <br>
-                <label>monthly budget:</label>
-                <input type="text" name="monthlyBudget" class="form-control">
-                <br>
-                <input type="submit" value="Add Department" class="btn btn-primary">
+            <form action="/RevaCompany/new" method="GET">
+                <input type="text" value="Add Department" class="btn btn-primary">
+            </form>
+            
+            <form action="/RevaCompany/departments" method = "GET">
+            	   <input type="text" value="View Departments" class="btn btn-primary">
             </form>
         </div>
     </body>
