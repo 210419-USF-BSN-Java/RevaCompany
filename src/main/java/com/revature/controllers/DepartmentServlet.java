@@ -57,7 +57,7 @@ public class DepartmentServlet extends HttpServlet{
 		String monthlyBudget = request.getParameter("monthlyBudget");
 		double budget = Integer.valueOf(monthlyBudget);
 		Department d = new Department();
-		d.setId(1);
+		d.setId(99);
 		d.setName(deptName);
 		d.setMonthlyBudget(budget);
 		
