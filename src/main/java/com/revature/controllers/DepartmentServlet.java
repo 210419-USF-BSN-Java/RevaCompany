@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,7 +26,7 @@ import util.h2Util;
 public class DepartmentServlet extends HttpServlet {
 
     private h2Util h2 = new h2Util();
-    DepartmentService ds = new DepartmentServiceImplementation();
+    private DepartmentService ds = new DepartmentServiceImplementation();
 
     public void init(ServletConfig config) {
         try {
@@ -52,18 +51,32 @@ public class DepartmentServlet extends HttpServlet {
         // TODO: Retrieve all departments
         List<Department> depts = ds.getDepartments();
 
+        // view in check we're getting the data
         for (Department d : depts) {
             System.out.println(d.toString());
         }
 
-        ObjectMapper om = new ObjectMapper();
-        PrintWriter pw = response.getWriter();
-        pw.write(om.writeValueAsString(depts));
+        // object mapper from Jackson Java object to JSON and JSON to Java object
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        // part of java.io package used to output data in a commonly readable form
+        PrintWriter printWriter = response.getWriter();
+        printWriter.write(objectMapper.writeValueAsString(depts));
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        // TODO: Create a department
+
+        String deptName = request.getParameter("name");
+        Double budget = Double.parseDouble(request.getParameter("budget"));
+        Department d = new Department();
+        d.setName(deptName);
+        d.setMonthlyBudget(budget);
+
+        if (deptName == null || budget == null || ds.addDepartment(d) == 0) {
+            response.setStatus(400);
+        } else {
+            response.setStatus(201);
+        }
     }
 }
