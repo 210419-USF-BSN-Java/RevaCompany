@@ -58,7 +58,7 @@ public class DepartmentServlet extends HttpServlet{
 		ObjectMapper om = new ObjectMapper();
 		PrintWriter pw = response.getWriter();
 		pw.write(om.writeValueAsString(department));
-		
+		pw.write("<a href = \"../RevaCompany/\" class=\"btn btn-primary\">Return to main menu</a>");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
