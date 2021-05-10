@@ -26,7 +26,6 @@ public class DepartmentPostgres implements DepartmentDao{
 		 * create prepared statement from connection
 		 * setting the variables
 		 * execute
-
 		 */
 		Department department = null;
 		String sql = "insert into departments (dept_name, monthly_budget) values (?,?) returning dept_id;";
